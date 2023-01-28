@@ -1,34 +1,41 @@
-import React from 'react';
-import { Map, TileLayer } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import HeatmapLayer from 'react-leaflet-heatmap-layer';
+import React from 'react'
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api'
 
-const data = [
-  { lat: 51.5, lng: -0.09, value: 3 },
-  { lat: 51.51, lng: -0.1, value: 10 },
-  { lat: 51.49, lng: -0.05, value: 5 },
-];
+const options = {
+  zoomControlOptions: {
+    position: google.maps.ControlPosition.RIGHT_CENTER // 'right-center' ,
+    // ...otherOptions
+  }
+}
 
-const HeatmapExample = () => {
-  return (
-    <Map center={[51.505, -0.09]} zoom={13}>
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <HeatmapLayer
-        fitBoundsOnLoad
-        fitBoundsOnUpdate
-        points={data}
-        longitudeExtractor={m => m.lng}
-        latitudeExtractor={m => m.lat}
-        intensityExtractor={m => m.value}
-      />
-    </Map>
-  );
-};
+function MyComponent() {
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyDpRbcacn_t-nGsifPSvmXI6Vdyp5wfSiY" // ,
+    // ...otherOptions
+  })
 
-//export default HeatmapExample;
+  const renderMap = () => {
+    // wrapping to a function is useful in case you want to access `window.google`
+    // to eg. setup options or create latLng object, it won't be available otherwise
+    // feel free to render directly if you don't need that
+    const onLoad = React.useCallback(
+      function onLoad (mapInstance) {
+        // do something with map Instance
+      }
+    )
+    return <GoogleMap
+      options={options}
+      onLoad={onLoad}
+    >
+      {
+        // ...Your map components
+      }
+    </GoogleMap>
+  }
 
+  if (loadError) {
+    return <div>Map cannot be loaded right now, sorry.</div>
+  }
 
-export default App;
+  return isLoaded ? renderMap() : <Spinner />
+}
