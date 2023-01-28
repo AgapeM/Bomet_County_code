@@ -6,7 +6,6 @@ import L from "leaflet";
 
 import Green from "../assets/green.png";
 import Red from "../assets/red.png";
-
 import db from "../firebase";
 
 const completeIcon = new L.Icon({
